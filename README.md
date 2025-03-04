@@ -1,3 +1,5 @@
+The information provided here is for testing and educational purposes only and should not be construed as financial advice. Please consult with a licensed financial advisor before making any financial decisions. This is all theoretical and not proven to work! This is a work in progress and nothing is guaranteed and things may/will break. 
+
 # Stonk-Trainer v2
 
 An advanced stonk market prediction model using Generative Reinforcement Policy Optimization (GRPO) with the Qwen2.5-1.5B-Instruct model, featuring enhanced reward functions and training methodology.
