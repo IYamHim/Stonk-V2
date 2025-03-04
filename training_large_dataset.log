@@ -1,0 +1,43 @@
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+
+Filtering:   0%|          | 0/2000 [00:00<?, ?it/s]
+Filtering:   9%|▊         | 172/2000 [00:00<00:01, 1713.45it/s]
+Filtering:  18%|█▊        | 366/2000 [00:00<00:00, 1842.51it/s]
+Filtering:  28%|██▊       | 558/2000 [00:00<00:00, 1874.61it/s]
+Filtering:  37%|███▋      | 746/2000 [00:00<00:01, 913.22it/s] 
+Filtering:  51%|█████     | 1018/2000 [00:00<00:00, 1301.35it/s]
+Filtering:  63%|██████▎   | 1260/2000 [00:00<00:00, 1252.30it/s]
+Filtering:  74%|███████▍  | 1484/2000 [00:01<00:00, 1461.00it/s]
+Filtering:  85%|████████▍ | 1695/2000 [00:01<00:00, 1608.57it/s]
+Filtering:  94%|█████████▍| 1890/2000 [00:01<00:00, 1647.65it/s]
+Filtering: 100%|██████████| 2000/2000 [00:01<00:00, 1498.15it/s]
+
+Epoch 1:   0%|          | 0/125 [00:00<?, ?it/s]`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/home/ai/miniconda3/envs/qwen_env/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py:745: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.5 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  return fn(*args, **kwargs)
+/home/ai/miniconda3/envs/qwen_env/lib/python3.10/site-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/tmp/tmprlygh26a: line 3: 236011 Killed                  python qwen_stock_test.py --train --quantize --epochs 5 --batch_size 8 --lr 1e-5 --kl_coef 0.15 --save_steps 100 --diverse_predictions --max_train_samples 2000
+
+ERROR conda.cli.main_run:execute(125): `conda run python qwen_stock_test.py --train --quantize --epochs 5 --batch_size 8 --lr 1e-5 --kl_coef 0.15 --save_steps 100 --diverse_predictions --max_train_samples 2000` failed. (See above for error)
+Starting Qwen stock prediction test...
+Loading Qwen model and tokenizer...
+Loading 2084Collective dataset...
+Loaded 305860 samples
+Using 2000 samples for training
+Filtering dataset for balanced up/down examples...
+Current balance: Up: 50, Down: 50, Ratio: 0.50
+Current balance: Up: 100, Down: 100, Ratio: 0.50
+Current balance: Up: 150, Down: 150, Ratio: 0.50
+Current balance: Up: 200, Down: 200, Ratio: 0.50
+Current balance: Up: 250, Down: 250, Ratio: 0.50
+Current balance: Up: 300, Down: 300, Ratio: 0.50
+Current balance: Up: 350, Down: 350, Ratio: 0.50
+Current balance: Up: 400, Down: 400, Ratio: 0.50
+Current balance: Up: 450, Down: 450, Ratio: 0.50
+Current balance: Up: 500, Down: 500, Ratio: 0.50
+Created balanced dataset with 1009 samples - Up: 505, Down: 504
+Starting Direct GRPO Training...
+
+===== Epoch 1/5 =====
+

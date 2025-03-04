@@ -1,0 +1,16 @@
+torch>=2.0.0,<3.0.0
+transformers>=4.34.0
+datasets>=2.14.0
+peft>=0.5.0
+bitsandbytes>=0.41.0
+accelerate>=0.20.0
+tqdm>=4.66.0
+numpy>=1.24.0
+regex>=2022.10.31
+sentencepiece>=0.1.99
+huggingface_hub>=0.16.0
+protobuf>=3.20.0
+tensorboard>=2.13.0
+jsonlines>=3.1.0
+scipy>=1.10.0
+pandas>=2.0.0 
