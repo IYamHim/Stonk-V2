@@ -294,7 +294,7 @@ One advantage of using the Qwen2.5-1.5B-Instruct model is that it requires less 
 │                                                             │
 │  • PyTorch: 2.0.0+                                          │
 │                                                             │
-│  • CUDA: 11.7+ (12.0+ recommended)                          │
+│  • CUDA: 11.7+ (11.8 recommended)                          │
 │                                                             │
 │  • Transformers: 4.38.0+                                    │
 │                                                             │
