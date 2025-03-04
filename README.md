@@ -149,10 +149,10 @@ The Stonk-Trainer v2 employs a two-stage GRPO (Generative Reinforcement Policy O
 │       v                v                     v                  │  │        v                 v                     v            │
 │  ┌─────────┐     ┌──────────────┐     ┌────────────────┐       │  │  ┌─────────────┐    ┌──────────────┐    ┌────────────────┐  │
 │  │Reference│     │Reward Function│     │Policy Gradient │       │  │  │Reference   │    │Enhanced      │    │Market Stats    │  │
-│  │Model    │────>│Format:   10% │────>│KL coef: 0.15   │       │  │  │Model       │───>│Reward        │───>│Tracking        │  │
+│  │Model    │────>│Format:   20% │────>│KL coef: 0.15   │       │  │  │Model       │───>│Reward        │───>│Tracking        │  │
 │  │(Frozen) │     │Direction: 35%│     │                │       │  │  │(Stage I)   │    │Direction: 25%│    │Up/Down Ratio   │  │
-│  └─────────┘     │Magnitude: 25%│     └────────────────┘       │  │  └─────────────┘    │Magnitude: 20%│    └────────────────┘  │
-│                  │Confidence:15%│              │                │  │                     │Confidence:25%│                │       │
+│  └─────────┘     │Magnitude: 20%│     └────────────────┘       │  │  └─────────────┘    │Magnitude: 20%│    └────────────────┘  │
+│                  │Confidence:10%│              │                │  │                     │Confidence:25%│                │       │
 │                  │Data Use: 15% │              │                │  │                     │Data Use: 30% │                │       │
 │                  └──────────────┘              v                │  │                     └──────────────┘                v       │
 │                                        ┌────────────────┐       │  │                                         ┌────────────────┐  │
