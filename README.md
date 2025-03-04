@@ -48,6 +48,7 @@ The reward function has been significantly improved to encourage data-driven pre
 - **Stage II**: "Super Saiyan" mode with natural distribution training (see [Super Saiyan Mode](#super-saiyan-mode-stage-ii)).
 
 ## Installation
+Linux is the only OS that has been tested to work. It is possible that this will work on Windows but it has not been confirmed. The current implementation requires CUDA and therefore Mac is not supported at this time.
 
 ### Requirements
 - Python 3.10+
