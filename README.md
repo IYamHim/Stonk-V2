@@ -102,7 +102,7 @@ You may need to edit the Python path in the scripts to match your environment.
 Key parameters (customizable in the scripts):
 - `--epochs`: Number of training epochs (default: 5)
 - `--batch_size`: Batch size for training (default: 8)
-- `--lr`: Learning rate (default: 1e-5) # Experiment with other values ex.: 5e-5
+- `--lr`: Learning rate (default: 1e-5) # Experiment with other values ex.: 2e-1-5e-5
 - `--kl_coef`: KL divergence coefficient (default: 0.15) # Experiment with other values ex.: 0.05-0.2
 - `--save_steps`: Steps between saving checkpoints (default: 100)
 - `--diverse_predictions`: Enable diversity penalties
