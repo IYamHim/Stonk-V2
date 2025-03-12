@@ -422,14 +422,14 @@ def find_next_trading_day(dataset, current_idx):
         print(f"Error finding next trading day: {str(e)}")
         return None, None
 
-def stage2_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=5e-6, kl_coef=0.05, save_steps=50, natural_distribution=True):
+def stage2_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=5e-6, kl_coef=0.05, save_steps=50, natural_distribution=True, output_dir = "./super_saiyan_grpo_stage2"):
     """
     Stage II GRPO Training with natural market distribution
     """
     print("Starting Stage II GRPO Training with Natural Market Distribution...")
     
     # Create output directory
-    output_dir = "./super_saiyan_grpo_stage2"
+    
     os.makedirs(output_dir, exist_ok=True)
     
     # Log file
@@ -774,6 +774,7 @@ def main():
     parser.add_argument("--save_steps", type=int, default=50, help="Steps between saving checkpoints")
     parser.add_argument("--natural_distribution", action="store_true", help="Use natural market distribution")
     parser.add_argument("--max_train_samples", type=int, default=5000, help="Maximum number of training samples")
+    parser.add_argument("--output_path", type=str, default="./super_saiyan_grpo_stage2", help="Output path for saving model")
     
     args = parser.parse_args()
     
@@ -806,7 +807,8 @@ def main():
         learning_rate=args.lr,
         kl_coef=args.kl_coef,
         save_steps=args.save_steps,
-        natural_distribution=args.natural_distribution
+        natural_distribution=args.natural_distribution,
+        output_dir=args.output_path
     )
 
 if __name__ == "__main__":
