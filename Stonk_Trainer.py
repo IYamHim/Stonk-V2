@@ -574,14 +574,14 @@ def find_next_trading_day_for_testing(dates_by_ticker, ticker, current_date):
         print(f"Error finding next trading day: {str(e)}")
         return None, None
 
-def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=1e-5, kl_coef=0.1, save_steps=50, diverse_predictions=False):
+def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=1e-5, kl_coef=0.1, save_steps=50, diverse_predictions=False, output_dir = "./stonk_trainer_grpo"):
     """
     Direct GRPO training without SFT
     """
     print("Starting Direct GRPO Training...")
     
     # Create output directory
-    output_dir = "./stonk_trainer_grpo"
+    
     os.makedirs(output_dir, exist_ok=True)
     # Create checkpoints directory
     checkpoints_dir = os.path.join(output_dir, "checkpoints")
@@ -917,6 +917,7 @@ def main():
     parser.add_argument("--save_steps", type=int, default=50, help="How often to save checkpoints")
     parser.add_argument("--max_train_samples", type=int, default=None, help="Maximum number of training samples to use")
     parser.add_argument("--diverse_predictions", action="store_true", help="Enforce diverse predictions during training")
+    parser.add_argument("--output_dir", type=str, default="./stonk_trainer_grpo", help="Output directory for training")
     
     args = parser.parse_args()
     
@@ -991,7 +992,8 @@ def main():
                 learning_rate=args.lr,
                 kl_coef=args.kl_coef,
                 save_steps=args.save_steps,
-                diverse_predictions=args.diverse_predictions
+                diverse_predictions=args.diverse_predictions,
+                output_dir=args.output_dir
             )
         
         if args.test:
