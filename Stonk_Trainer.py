@@ -574,14 +574,16 @@ def find_next_trading_day_for_testing(dates_by_ticker, ticker, current_date):
         print(f"Error finding next trading day: {str(e)}")
         return None, None
 
-def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=1e-5, kl_coef=0.1, save_steps=50, diverse_predictions=False, output_dir = "./stonk_trainer_grpo"):
+def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=1e-5, kl_coef=0.1, save_steps=50, diverse_predictions=False, output_dir = "./stonk_trainer_grpo", use_wandb=True):
     """
     Direct GRPO training without SFT
     """
     print("Starting Direct GRPO Training...")
     
     # Create output directory
-    
+    if use_wandb:
+        import wandb
+        wandb.init(project="stonk-trainer-grpo")
     os.makedirs(output_dir, exist_ok=True)
     # Create checkpoints directory
     checkpoints_dir = os.path.join(output_dir, "checkpoints")
@@ -826,6 +828,7 @@ def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_ra
                         batch_logs.append({
                             "step": step,
                             "ticker": sample['ticker'],
+                            "current_date": sample['company_info']['current_date'].strftime('%Y-%m-%d'),
                             "actual_change": float(actual_change_pct),
                             "predicted_direction": prediction["direction"],
                             "predicted_pct": float(prediction["percentage"]),
@@ -868,7 +871,12 @@ def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_ra
                 with open(log_file, 'a') as f:
                     for log in batch_logs:
                         f.write(json.dumps(log) + '\n')
-                
+                if use_wandb:
+                    try:
+                        for log in batch_logs:
+                            wandb.log(log)
+                    except Exception as wandb_error:
+                        print(f"Error logging to Weights & Biases: {wandb_error}")
                 # Increment step
                 step += 1
                 
@@ -918,7 +926,7 @@ def main():
     parser.add_argument("--max_train_samples", type=int, default=None, help="Maximum number of training samples to use")
     parser.add_argument("--diverse_predictions", action="store_true", help="Enforce diverse predictions during training")
     parser.add_argument("--output_dir", type=str, default="./stonk_trainer_grpo", help="Output directory for training")
-    
+    parser.add_argument("--use_wandb", action="store_true", help="Use Weights & Biases for logging")
     args = parser.parse_args()
     
     print("Starting Qwen stock prediction test...")
@@ -993,7 +1001,8 @@ def main():
                 kl_coef=args.kl_coef,
                 save_steps=args.save_steps,
                 diverse_predictions=args.diverse_predictions,
-                output_dir=args.output_dir
+                output_dir=args.output_dir,
+                use_wandb=args.use_wandb
             )
         
         if args.test:

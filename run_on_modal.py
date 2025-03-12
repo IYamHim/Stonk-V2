@@ -3,13 +3,16 @@ import os
 import subprocess
 import sys
 
-volume = modal.Volume.from_name("stonks-v2")
-VOLUME_DIR = "/app"
+volume = modal.Volume.from_name("stonks-v2", create_if_missing=True)
+VOLUME_DIR = "/vol"
+STONKS_DIR = "/stonksv2"
 GPU_USED = "A10"
-
+TIMEOUT=60*60*24
 SUPER_SAIYIN = "Super_Sayin_GRPO_Trainer_StageII"
 image = (
     modal.Image.debian_slim(python_version="3.11")
+    .apt_install("wget")
+    .apt_install("git")
     .run_commands(
         """ls && \
 wget https://developer.download.nvidia.com/compute/cuda/repos/debian12/x86_64/cuda-keyring_1.1-1_all.deb && \
@@ -19,22 +22,25 @@ apt-get install -y cuda-toolkit
 """
     )
     .pip_install_from_requirements("requirements.txt", gpu=GPU_USED)
-    .add_local_file("Stonk_Trainer.py", f"{VOLUME_DIR}/Stonk_Trainer.py")
-    .add_local_dir(SUPER_SAIYIN, f"{VOLUME_DIR}/{SUPER_SAIYIN}")
+    .pip_install("wandb")
+    .add_local_file("Stonk_Trainer.py", f"{STONKS_DIR}/Stonk_Trainer.py")
+    .add_local_dir(SUPER_SAIYIN, f"{STONKS_DIR}/{SUPER_SAIYIN}")
 )
 app = modal.App("stonks-v2")
 
 
-@app.function(image=image, volumes={VOLUME_DIR: volume}, gpu=GPU_USED)
+@app.function(image=image, volumes={VOLUME_DIR: volume}, gpu=GPU_USED, timeout=TIMEOUT, secrets=[
+    modal.Secret.from_name("stonks-v2", required_keys=["WANDB_API_KEY"])
+])
 async def run_stonk_trainer(
     epochs: int = 5,
     batch_size: int = 8,
     lr: float = 1e-5,
     kl_coef: float = 0.15,
-    save_steps: int = 100,
+    save_steps: int = 10,
     max_train_samples: int = 2000,
 ):
-    os.chdir(VOLUME_DIR)
+    os.chdir(STONKS_DIR)
     model_path = os.path.join(VOLUME_DIR, "models")
     os.makedirs(model_path, exist_ok=True)
     """
@@ -67,15 +73,18 @@ async def run_stonk_trainer(
             "--diverse_predictions",
             "--max_train_samples",
             str(max_train_samples),
-            "--output_path",
+            "--output_dir",
             model_path,
+            "--use_wandb",
         ]
     )
 
 
-@app.function(image=image, volumes={VOLUME_DIR: volume}, gpu=GPU_USED)
+@app.function(image=image, volumes={VOLUME_DIR: volume}, gpu=GPU_USED, timeout=TIMEOUT, secrets=[
+    modal.Secret.from_name("stonks-v2", required_keys=["WANDB_API_KEY"])
+])
 async def run_stonk_tester():
-    os.chdir(VOLUME_DIR)
+    os.chdir(STONKS_DIR)
     model_path = os.path.join(VOLUME_DIR, "models")
     os.makedirs(model_path, exist_ok=True)
     subprocess.run(
@@ -90,13 +99,16 @@ async def run_stonk_tester():
     )
 
 
-@app.function(image=image, volumes={VOLUME_DIR: volume}, gpu=GPU_USED)
+@app.function(image=image, volumes={VOLUME_DIR: volume}, gpu=GPU_USED, timeout=TIMEOUT, secrets=[
+    modal.Secret.from_name("stonks-v2", required_keys=["WANDB_API_KEY"])
+])
 async def run_super_saiyin_grpon(max_train_samples: int = 5000):
-    os.chdir(os.path.join(VOLUME_DIR, SUPER_SAIYIN))
+    os.chdir(os.path.join(STONKS_DIR, SUPER_SAIYIN))
     model_path = os.path.join(VOLUME_DIR, "models")
     checkpoints = os.path.join(model_path, "checkpoints")
     best_model = os.path.join(checkpoints, "best_model")
-    os.makedirs(model_path, exist_ok=True)
+    new_model_path = os.path.join(VOLUME_DIR, "super_saiyin_grpo")
+    os.makedirs(new_model_path, exist_ok=True)
     subprocess.run(
         [
             "python",
@@ -107,8 +119,8 @@ async def run_super_saiyin_grpon(max_train_samples: int = 5000):
             "--natural_distribution",
             "--max_train_samples",
             str(max_train_samples),
-            "--output_path",
-            model_path,
+            "--output_dir",
+            new_model_path,
         ]
     )
     

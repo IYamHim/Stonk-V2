@@ -774,7 +774,7 @@ def main():
     parser.add_argument("--save_steps", type=int, default=50, help="Steps between saving checkpoints")
     parser.add_argument("--natural_distribution", action="store_true", help="Use natural market distribution")
     parser.add_argument("--max_train_samples", type=int, default=5000, help="Maximum number of training samples")
-    parser.add_argument("--output_path", type=str, default="./super_saiyan_grpo_stage2", help="Output path for saving model")
+    parser.add_argument("--output_dir", type=str, default="./super_saiyan_grpo_stage2", help="Output path for saving model")
     
     args = parser.parse_args()
     
@@ -808,7 +808,7 @@ def main():
         kl_coef=args.kl_coef,
         save_steps=args.save_steps,
         natural_distribution=args.natural_distribution,
-        output_dir=args.output_path
+        output_dir=args.output_dir
     )
 
 if __name__ == "__main__":
