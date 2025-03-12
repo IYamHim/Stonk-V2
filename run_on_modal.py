@@ -4,9 +4,11 @@ import subprocess
 import sys
 
 volume = modal.Volume.from_name("stonks-v2", create_if_missing=True)
+secret = modal.Secret.from_name("stonks-v2", required_keys=["WANDB_API_KEY", "HF_TOKEN"])
+
 VOLUME_DIR = "/vol"
 STONKS_DIR = "/stonksv2"
-GPU_USED = "A10"
+GPU_USED = "A100-80GB"
 TIMEOUT=60*60*24
 SUPER_SAIYIN = "Super_Sayin_GRPO_Trainer_StageII"
 image = (
@@ -33,8 +35,8 @@ app = modal.App("stonks-v2")
     modal.Secret.from_name("stonks-v2", required_keys=["WANDB_API_KEY"])
 ])
 async def run_stonk_trainer(
-    epochs: int = 5,
-    batch_size: int = 8,
+    epochs: int = 1,
+    batch_size: int = 1,
     lr: float = 1e-5,
     kl_coef: float = 0.15,
     save_steps: int = 10,

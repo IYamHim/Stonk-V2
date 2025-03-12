@@ -46,7 +46,7 @@ def load_base_model(quantize=True):
     """Load the base Qwen model with quantization"""
     print("Loading Qwen model and tokenizer...")
     
-    model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+    model_name = "Qwen/Qwen2.5-7B-Instruct"
     
     # Configure quantization
     if quantize:
@@ -574,7 +574,7 @@ def find_next_trading_day_for_testing(dates_by_ticker, ticker, current_date):
         print(f"Error finding next trading day: {str(e)}")
         return None, None
 
-def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=1e-5, kl_coef=0.1, save_steps=50, diverse_predictions=False, output_dir = "./stonk_trainer_grpo", use_wandb=True):
+def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_rate=1e-5, kl_coef=0.1, save_steps=10, diverse_predictions=False, output_dir = "./stonk_trainer_grpo", use_wandb=True):
     """
     Direct GRPO training without SFT
     """
@@ -878,13 +878,16 @@ def grpo_training(model, tokenizer, dataset, epochs=3, batch_size=4, learning_ra
                     except Exception as wandb_error:
                         print(f"Error logging to Weights & Biases: {wandb_error}")
                 # Increment step
-                step += 1
-                
+                if step % save_steps == 0:
+                    model.push_to_hub(f"checkpoint-{step}")
+                    tokenizer.push_to_hub(f"checkpoint-{step}")
                 # Save checkpoint if needed
                 if step % save_steps == 0:
                     checkpoint_path = os.path.join(checkpoints_dir, f"checkpoint-{step}")
                     model.save_pretrained(checkpoint_path)
                     print(f"Checkpoint saved to {checkpoint_path}")
+                step += 1
+                
         
         # Epoch summary
         if total_samples > 0:
@@ -986,7 +989,10 @@ def main():
                     balanced_dataset = Dataset.from_list(filtered_examples)
                     dataset = balanced_dataset
                     print(f"Created balanced dataset with {len(dataset)} samples - Up: {up_count}, Down: {down_count}")
-            
+            # train test split
+            dataset = dataset.train_test_split(test_size=0.05)
+            dataset.push_to_hub("2084Collective/deepstock-sp500-companies-with-info-and-user-prompt_buy_sell_v2-stonkv2-training-test-train-split")
+            dataset = dataset['train']
             # Prepare model for training
             model = prepare_model_for_training(model)
             
